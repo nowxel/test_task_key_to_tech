@@ -18,13 +18,21 @@ class _NotesUiState extends State<NotesUi> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Notes"),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              noteBloc.dispatch(OpenAddNoteUiEvent(context));
+            },
+            icon: Icon(Icons.add),
+          )
+        ],
       ),
       body: BlocBuilder<NoteBloc, NoteState>(
         bloc: noteBloc,
         builder: (BuildContext context, NoteState state) {
           if (state is InitialNoteState) {
             return Center(
-              child: Text('Welcome to notes family'),
+              child: Text('Welcome to notes app'),
             );
           } else if (state is FetchingNoteCompleteState) {
             return ListView.builder(
@@ -34,6 +42,14 @@ class _NotesUiState extends State<NotesUi> {
                 return ListTile(
                   title: Text(state.notes[index].title),
                   subtitle: Text(state.notes[index].description),
+                  trailing: IconButton(icon: Icon(Icons.delete),
+                    onPressed: () {
+                      noteBloc.dispatch(RemoveNoteEvent(index));
+                    },
+                  ),
+                  onTap: () {
+                    noteBloc.dispatch(ViewDetailNoteEvent(context, state.notes[index], index));
+                  },
                 );
               },
             );

@@ -12,6 +12,10 @@ class FetchingNoteCompleteState extends NoteState {
   FetchingNoteCompleteState(this.notes);
 }
 
+class AddingNoteInProgressState extends NoteState {}
+
+class AddingNoteCompleteState extends NoteState {}
+
 class EmptyNoteState extends NoteState {}
 
 class InitialNoteState extends NoteState {}
