@@ -1,7 +1,9 @@
+import 'dart:io';
+
 class NoteModel {
   String _title;
   String _description;
-  String _image;
+  File _image;
 
   NoteModel(this._title, this._description, this._image);
 
@@ -9,5 +11,5 @@ class NoteModel {
 
   String get title => _title;
 
-  String get picture => _image;
+  File get picture => _image;
 }

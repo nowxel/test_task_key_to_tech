@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:test_task_key_to_tech/bloc/bloc.dart';
-import 'package:test_task_key_to_tech/bloc/event.dart';
-import 'package:test_task_key_to_tech/bloc/model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:test_task_key_to_tech/bloc/state.dart';
+
+import 'bloc.dart';
+import 'event.dart';
+import 'model.dart';
+
 
 
 class NotesAddUi extends StatefulWidget {
@@ -21,6 +26,27 @@ class _NotesAddUiState extends State<NotesAddUi> {
   NoteBloc noteBloc;
   bool _isEmpty = true;
 
+  File _pickedImage;
+
+  //final picker = ImagePicker();
+
+  void _pickImage() async {
+    final File getImage = await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+      maxWidth: 150,
+
+    );
+    setState(() {
+      if (getImage != null) {
+        _pickedImage = File(getImage.path);
+//widget.imagePickerFun(_pickedImage);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   initState() {
     super.initState();
@@ -29,6 +55,7 @@ class _NotesAddUiState extends State<NotesAddUi> {
     imageController = TextEditingController();
     if (widget.model != null) {
       _isEmpty = false;
+      _pickedImage = widget.model.picture;
       titleController.text = widget.model.title;
       descriptionController.text = widget.model.description;
       imageController.text = widget.model.description;
@@ -37,12 +64,12 @@ class _NotesAddUiState extends State<NotesAddUi> {
 
   void addNote() {
     noteBloc.dispatch(AddNoteEvent(
-        NoteModel(titleController.text, descriptionController.text, imageController.text)));
+        NoteModel(titleController.text, descriptionController.text, _pickedImage)));
     Navigator.pop(context);
   }
 
   void updateNote() {
-    noteBloc.dispatch(UpdateNoteEvent(NoteModel(titleController.text, descriptionController.text, imageController.text), widget.index));
+    noteBloc.dispatch(UpdateNoteEvent(NoteModel(titleController.text, descriptionController.text, _pickedImage), widget.index));
     Navigator.pop(context);
   }
 
@@ -76,6 +103,17 @@ class _NotesAddUiState extends State<NotesAddUi> {
             SizedBox(
               height: 16,
             ),
+            CircleAvatar(
+              radius: 40.0,
+              backgroundColor: Colors.grey,
+              backgroundImage:
+              _pickedImage != null ? FileImage(_pickedImage) : null,
+            ),
+            TextButton.icon(
+              icon: Icon(Icons.image),
+              label: Text('Add Image'),
+              onPressed: _pickImage,
+            ),
             BlocBuilder<NoteBloc, NoteState>(
                 bloc: noteBloc,
                 builder: (BuildContext context, NoteState state) {
@@ -96,6 +134,7 @@ class _NotesAddUiState extends State<NotesAddUi> {
                       ),
                     );
                 }),
+
           ],
         ),
       ),
