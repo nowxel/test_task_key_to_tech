@@ -15,10 +15,6 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<NoteBloc>(
             builder: (context) => NoteBloc(), child: NotesUi()),
-        BlocProvider<NoteBloc>(
-            builder: (context) => NoteBloc(), child: NotesAddUi()),
-        BlocProvider<NoteBloc>(
-            builder: (context) => NoteBloc(), child: NotesAddUi()),
       ],
       child: MaterialApp(home: NotesUi()),
     );
